@@ -1,7 +1,12 @@
+<%@page import="com.message.model.MessageDTO"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.message.model.MessageDAO"%>
 <%@page import="com.message.model.MemberDTO"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>  
 <%
 	MemberDTO member = (MemberDTO)session.getAttribute("member");
+	MessageDAO dao = new MessageDAO();
+	ArrayList<MessageDTO> msglist = null;
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -146,7 +151,23 @@
 									</header>
 									<p></p>
 									<ul class="actions">
+										<% if(member==null){%>
 										<li>로그인을 하세요.</li>
+										<% }else{
+											msglist = dao.receiveMessage(member.getM_email());
+											if(msglist.isEmpty()){
+												out.print("<li>현재 도착한 메세지가 없습니다.</li>");
+											}else{
+												for(int i = 0; i < msglist.size(); i++){%>
+													<li><strong>보낸 사람 : </strong> <%=msglist.get(i).getM_sendName() %><br>
+														<strong>내용 : </strong> <%=msglist.get(i).getM_content() %><br>
+														<strong>날짜 : </strong> <%=msglist.get(i).getM_sendDate() %><br>
+													<li>
+												<%	
+												}
+											}
+										%>
+										<%} %>
 										<li><a href="#" class="button next scrolly">전체삭제하기</a></li>
 									</ul>
 								</div>
